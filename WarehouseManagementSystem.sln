@@ -17,7 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bus.StateMachine", "Bus.Sta
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{3E8C7BDD-8AFB-4102-A293-A1556E9EB72D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WMS.FrontEnd", "WMS.FrontEnd\WMS.FrontEnd.csproj", "{A89E0639-7148-4C34-B2BF-7E9A26C18087}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WMS.FrontEnd", "WMS.FrontEnd\WMS.FrontEnd.csproj", "{A89E0639-7148-4C34-B2BF-7E9A26C18087}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{24EB9DEF-E083-4927-B554-CBCE6B98219C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

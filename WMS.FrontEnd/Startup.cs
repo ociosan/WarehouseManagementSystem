@@ -8,6 +8,12 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WMS.Data;
+using Microsoft.EntityFrameworkCore;
+using WMS.FrontEnd.Mappings;
+using AutoMapper;
+using WMS.FrontEnd.Data.Repository;
+using WMS.FrontEnd.Data.Contracts;
 
 namespace WMS.FrontEnd
 {
@@ -23,6 +29,15 @@ namespace WMS.FrontEnd
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<WMSDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<IPersonRepository, PersonRepository>();
+            services.AddScoped<IRolRepository, RolRepository>();
+
+            services.AddAutoMapper(typeof(Maps));
+
             services.AddControllersWithViews();
         }
 

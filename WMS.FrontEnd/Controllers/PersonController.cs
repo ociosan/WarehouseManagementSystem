@@ -1,0 +1,105 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using WMS.FrontEnd.Data.Contracts;
+using WMS.FrontEnd.Models;
+
+namespace WMS.FrontEnd.Controllers
+{
+    public class PersonController : Controller
+    {
+        private readonly IPersonRepository _personRepo;
+        private readonly IMapper _mapper;
+
+        public PersonController(IPersonRepository therepo, IMapper themapper)
+        {
+            _personRepo = therepo;
+            _mapper = themapper;
+        }
+        // GET: Person
+        public ActionResult Index()
+        {
+
+            return View();
+        }
+
+        // GET: Person/Details/5
+        public ActionResult Details(int id)
+        {
+            return View();
+        }
+
+        // GET: Person/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Person/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(IFormCollection collection)
+        {
+            try
+            {
+                // TODO: Add insert logic here
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // GET: Person/Edit/5
+        public ActionResult Edit(int id)
+        {
+            return View();
+        }
+
+        // POST: Person/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(int id, IFormCollection collection)
+        {
+            try
+            {
+                // TODO: Add update logic here
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // GET: Person/Delete/5
+        public ActionResult Delete(int id)
+        {
+            return View();
+        }
+
+        // POST: Person/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id, IFormCollection collection)
+        {
+            try
+            {
+                // TODO: Add delete logic here
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+    }
+}

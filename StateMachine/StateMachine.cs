@@ -10,7 +10,7 @@ namespace StateMachine
 {
     public partial class StateMachine : MassTransitStateMachine<StateInstance>
     {
-        private static readonly EnabledLogger _logger;
+
         public StateMachine()
         {
             InstanceState(x => x.CurrentState);
