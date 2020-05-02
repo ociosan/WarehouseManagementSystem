@@ -13,8 +13,11 @@ namespace WMS.Data
         public WMSDbContext(DbContextOptions<WMSDbContext> options) : base(options)
         { }
 
-        public DbSet<Person> Person { get; set; }
-        public DbSet<Rol> Rol { get; set; }
-        public DbSet<WMS.FrontEnd.Models.RolViewModel> RolViewModel { get; set; }
+        public DbSet<Concecionaria> Concecionaria { get; set; }
+        public DbSet<Producto> Producto { get; set; }
+        public DbSet<ConfiguracionGlobal> ConfiguracionGlobal { get; set; }
+        public DbSet<WMS.FrontEnd.Models.ConfiguracionGlobalViewModel> ConfiguracionGlobalViewModel { get; set; }
+        public DbSet<WMS.FrontEnd.Models.ConcecionariaViewModel> ConcecionariaViewModel { get; set; }
+        public DbSet<WMS.FrontEnd.Models.ProductoViewModel> ProductoViewModel { get; set; }
     }
 }

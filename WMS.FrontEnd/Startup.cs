@@ -14,6 +14,7 @@ using WMS.FrontEnd.Mappings;
 using AutoMapper;
 using WMS.FrontEnd.Data.Repository;
 using WMS.FrontEnd.Data.Contracts;
+using Microsoft.AspNetCore.Identity;
 
 namespace WMS.FrontEnd
 {
@@ -33,16 +34,25 @@ namespace WMS.FrontEnd
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddScoped<IPersonRepository, PersonRepository>();
-            services.AddScoped<IRolRepository, RolRepository>();
-
+            services.AddScoped<IConcecionariaRepository, ConcecionariaRepository>();
+            services.AddScoped<IProductoRepository, ProductoRepository>();
+            services.AddScoped<IConfiguracionGlobalRepository, ConfiguracionGlobalRepository>();
             services.AddAutoMapper(typeof(Maps));
 
+            services.AddDefaultIdentity<IdentityUser>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<WMSDbContext>();
+
             services.AddControllersWithViews();
+            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app
+            , IWebHostEnvironment env
+            ,UserManager<IdentityUser> userManager
+            ,RoleManager<IdentityRole> roleManager)
         {
             if (env.IsDevelopment())
             {
@@ -59,13 +69,17 @@ namespace WMS.FrontEnd
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
+            SeedData.Seed(userManager,roleManager);
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
         }
     }

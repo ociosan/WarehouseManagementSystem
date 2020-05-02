@@ -12,8 +12,9 @@ namespace WMS.FrontEnd.Mappings
     {
         public Maps()
         {
-            CreateMap<Person, PersonViewModel>().ReverseMap();
-            CreateMap<Rol, RolViewModel>().ReverseMap();
+            CreateMap<Producto, ProductoViewModel>().ReverseMap();
+            CreateMap<Concecionaria, ConcecionariaViewModel>().ReverseMap();
+            CreateMap<ConfiguracionGlobal, ConfiguracionGlobalViewModel>().ReverseMap();
         }
     }
 }
