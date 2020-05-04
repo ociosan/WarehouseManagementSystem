@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WMS.FrontEnd.Data.Contracts;
-using WMS.FrontEnd.Data.Entities;
+using WMS.FrontEnd.Contracts;
+using WMS.FrontEnd.Data;
 using WMS.FrontEnd.Models;
 
 namespace WMS.FrontEnd.Controllers
@@ -16,27 +16,29 @@ namespace WMS.FrontEnd.Controllers
         private readonly IConcecionariaRepository _concecionariaRepo;
         private readonly IMapper _mapper;
 
-        public ConcecionariaController(IConcecionariaRepository concecionariaRepository, IMapper mapper)
+        public ConcecionariaController(IConcecionariaRepository concecionariaRepo, IMapper mapper)
         {
-            _concecionariaRepo = concecionariaRepository;
+            _concecionariaRepo = concecionariaRepo;
             _mapper = mapper;
         }
 
         // GET: Concecionaria
         public ActionResult Index()
         {
-            return View(_mapper.Map<List<Concecionaria>, List<ConcecionariaViewModel>>(_concecionariaRepo.FindAll().ToList()));
-
+            var concecionaria = _concecionariaRepo.FindAll().ToList();
+            var model = _mapper.Map<List<Concecionaria>, List<ConcecionariaVM>>(concecionaria);
+            return View(model);
         }
 
         // GET: Concecionaria/Details/5
         public ActionResult Details(int id)
         {
-
             if (!_concecionariaRepo.IsExists(id))
                 return NotFound();
 
-            return View(_mapper.Map<ConcecionariaViewModel>(_concecionariaRepo.FindById(id)));
+            var concecionaria = _concecionariaRepo.FindById(id);
+            var model = _mapper.Map<ConcecionariaVM>(concecionaria);
+            return View(model);
         }
 
         // GET: Concecionaria/Create
@@ -48,18 +50,21 @@ namespace WMS.FrontEnd.Controllers
         // POST: Concecionaria/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ConcecionariaViewModel model)
+        public ActionResult Create(Concecionaria model)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return View(model);
 
-                var configuracion = _mapper.Map<Concecionaria>(model);
-                configuracion.FechaAlta = DateTime.Now;
-                if (!_concecionariaRepo.Create(configuracion))
+                var concecionaria = _mapper.Map<Concecionaria>(model);
+                concecionaria.FechaAlta = DateTime.Now;
+                
+                var isSuccess = _concecionariaRepo.Create(concecionaria);
+
+                if (!isSuccess)
                 {
-                    ModelState.AddModelError("", "Hubo un error....");
+                    ModelState.AddModelError("", "Something went wrong...");
                     return View(model);
                 }
 
@@ -77,25 +82,28 @@ namespace WMS.FrontEnd.Controllers
             if (!_concecionariaRepo.IsExists(id))
                 return NotFound();
 
-            var config = _concecionariaRepo.FindById(id);
-            return View(_mapper.Map<ConcecionariaViewModel>(config));
+            var concecionaria = _concecionariaRepo.FindById(id);
+            var model = _mapper.Map<ConcecionariaVM>(concecionaria);
+            return View(model);
         }
 
         // POST: Concecionaria/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(ConcecionariaViewModel model)
+        public ActionResult Edit(ConcecionariaVM model)
         {
             try
             {
+                // TODO: Add update logic here
                 if (!ModelState.IsValid)
                     return View(model);
 
-                var config = _mapper.Map<Concecionaria>(model);
-                if (!_concecionariaRepo.Update(config))
+                var concecionaria = _mapper.Map<Concecionaria>(model);
+                if (!_concecionariaRepo.Update(concecionaria))
                 {
-                    ModelState.AddModelError("", "Hubo un error...");
+                    ModelState.AddModelError("", "Something went wrong...");
                     return View(model);
+
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -122,16 +130,19 @@ namespace WMS.FrontEnd.Controllers
         // POST: Concecionaria/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, ConcecionariaViewModel model)
+        public ActionResult Delete(int id, ConcecionariaVM model)
         {
             try
             {
+
                 var concecionaria = _concecionariaRepo.FindById(id);
                 if (concecionaria == null)
                     return NotFound();
 
                 if (!_concecionariaRepo.Delete(concecionaria))
+                {
                     return View(model);
+                }
 
                 return RedirectToAction(nameof(Index));
             }

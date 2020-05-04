@@ -2,54 +2,54 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WMS.Data;
-using WMS.FrontEnd.Data.Contracts;
-using WMS.FrontEnd.Data.Entities;
+using WMS.FrontEnd.Contracts;
+using WMS.FrontEnd.Data;
 
-namespace WMS.FrontEnd.Data.Repository
+namespace WMS.FrontEnd.Repository
 {
     public class ProductoRepository : IProductoRepository
     {
-        private readonly WMSDbContext _dbContext;
-        public ProductoRepository(WMSDbContext context)
+        private readonly ApplicationDbContext _db;
+
+        public ProductoRepository(ApplicationDbContext db)
         {
-            _dbContext = context;
+            _db = db;
         }
         public bool Create(Producto entity)
         {
-            _dbContext.Producto.Add(entity);
+            _db.Productos.Add(entity);
             return Save();
         }
 
         public bool Delete(Producto entity)
         {
-            _dbContext.Producto.Remove(entity);
+            _db.Productos.Remove(entity);
             return Save();
         }
 
         public ICollection<Producto> FindAll()
         {
-            return _dbContext.Producto.ToList();
+            return _db.Productos.ToList();
         }
 
         public Producto FindById(int id)
         {
-            return _dbContext.Producto.Find(id);
+            return _db.Productos.Find(id);
         }
 
         public bool IsExists(int id)
         {
-            return _dbContext.Producto.Any(q => q.Id == id);
+            return _db.Productos.Any(q => q.Id == id);
         }
 
         public bool Save()
         {
-            return _dbContext.SaveChanges() > 0;
+            return _db.SaveChanges() > 0;
         }
 
         public bool Update(Producto entity)
         {
-            _dbContext.Producto.Update(entity);
+            _db.Productos.Update(entity);
             return Save();
         }
     }

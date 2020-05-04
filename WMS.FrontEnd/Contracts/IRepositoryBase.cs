@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace WMS.FrontEnd.Data.Contracts
+namespace WMS.FrontEnd.Contracts
 {
     public interface IRepositoryBase<T> where T : class
     {

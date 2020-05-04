@@ -4,11 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WMS.FrontEnd.Data.Entities
+namespace WMS.FrontEnd.Models
 {
-    public class ConfiguracionGlobal
+    public class ConfiguracionGlobalVM
     {
-        [Key]
         public int Id { get; set; }
         [Required]
         public string Nombre { get; set; }

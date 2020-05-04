@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WMS.FrontEnd.Data.Contracts;
-using WMS.FrontEnd.Data.Entities;
+using WMS.FrontEnd.Contracts;
+using WMS.FrontEnd.Data;
 using WMS.FrontEnd.Models;
 
 namespace WMS.FrontEnd.Controllers
@@ -16,16 +16,18 @@ namespace WMS.FrontEnd.Controllers
         private readonly IProductoRepository _productoRepo;
         private readonly IMapper _mapper;
 
-        public ProductoController(IProductoRepository repo, IMapper mapper)
+        public ProductoController(IProductoRepository productoRepo, IMapper mapper)
         {
-            _productoRepo = repo;
+            _productoRepo = productoRepo;
             _mapper = mapper;
         }
 
         // GET: Producto
         public ActionResult Index()
         {
-            return View(_mapper.Map<List<Producto>, List<ProductoViewModel>>(_productoRepo.FindAll().ToList()));
+            var producto = _productoRepo.FindAll().ToList();
+            var model = _mapper.Map<List<Producto>, List<ProductoVM>>(producto);
+            return View(model);
         }
 
         // GET: Producto/Details/5
@@ -34,8 +36,9 @@ namespace WMS.FrontEnd.Controllers
             if (!_productoRepo.IsExists(id))
                 return NotFound();
 
-            return View(_mapper.Map<ProductoViewModel>(_productoRepo.FindById(id)));
-
+            var concecionaria = _productoRepo.FindById(id);
+            var model = _mapper.Map<ProductoVM>(concecionaria);
+            return View(model);
         }
 
         // GET: Producto/Create
@@ -47,7 +50,7 @@ namespace WMS.FrontEnd.Controllers
         // POST: Producto/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ProductoViewModel model)
+        public ActionResult Create(Producto model)
         {
             try
             {
@@ -56,9 +59,12 @@ namespace WMS.FrontEnd.Controllers
 
                 var producto = _mapper.Map<Producto>(model);
                 producto.FechaAlta = DateTime.Now;
-                if (!_productoRepo.Create(producto))
+
+                var isSuccess = _productoRepo.Create(producto);
+
+                if (!isSuccess)
                 {
-                    ModelState.AddModelError("", "Hubo un error....");
+                    ModelState.AddModelError("", "Something went wrong...");
                     return View(model);
                 }
 
@@ -77,24 +83,27 @@ namespace WMS.FrontEnd.Controllers
                 return NotFound();
 
             var producto = _productoRepo.FindById(id);
-            return View(_mapper.Map<ProductoViewModel>(producto));
+            var model = _mapper.Map<ProductoVM>(producto);
+            return View(model);
         }
 
         // POST: Producto/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(ProductoViewModel model)
+        public ActionResult Edit(ProductoVM model)
         {
             try
             {
+                // TODO: Add update logic here
                 if (!ModelState.IsValid)
                     return View(model);
 
                 var producto = _mapper.Map<Producto>(model);
                 if (!_productoRepo.Update(producto))
                 {
-                    ModelState.AddModelError("", "Hubo un error...");
+                    ModelState.AddModelError("", "Something went wrong...");
                     return View(model);
+
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -121,16 +130,19 @@ namespace WMS.FrontEnd.Controllers
         // POST: Producto/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, ProductoViewModel model)
+        public ActionResult Delete(int id, ProductoVM model)
         {
             try
             {
+
                 var producto = _productoRepo.FindById(id);
                 if (producto == null)
                     return NotFound();
 
                 if (!_productoRepo.Delete(producto))
+                {
                     return View(model);
+                }
 
                 return RedirectToAction(nameof(Index));
             }

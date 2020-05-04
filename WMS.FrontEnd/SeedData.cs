@@ -3,9 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WMS.FrontEnd.Data;
 
 namespace WMS.FrontEnd
 {
+
     public static class SeedData
     {
         public static void Seed(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
@@ -18,35 +20,32 @@ namespace WMS.FrontEnd
         {
             if (userManager.FindByNameAsync("admin").Result == null)
             {
-                var user = new IdentityUser { UserName = "admin", Email = "admin@localhost" };
+                var user = new Empleado
+                {
+                    UserName = "admin"
+                    ,
+                    Email = "admin@localhost.com"
+                };
                 var result = userManager.CreateAsync(user, "Rinnegan.01").Result;
 
                 if (result.Succeeded)
                 {
-                    userManager.AddToRoleAsync(user, "Administrador").Wait();
+                    userManager.AddToRoleAsync(user, "Administrator").Wait();
                 }
             }
         }
-
         private static void SeedRoles(RoleManager<IdentityRole> roleManager)
         {
-            if (!roleManager.RoleExistsAsync("Administrador").Result)
+            if (!roleManager.RoleExistsAsync("Administrator").Result)
             {
                 var role = new IdentityRole
                 {
-                    Name = "Administrador"
+                    Name = "Administrator"
                 };
                 var result = roleManager.CreateAsync(role).Result;
             }
 
-            if (!roleManager.RoleExistsAsync("Empleado").Result)
-            {
-                var role = new IdentityRole
-                {
-                    Name = "Empleado"
-                };
-                var result = roleManager.CreateAsync(role).Result;
-            }
         }
     }
+   
 }

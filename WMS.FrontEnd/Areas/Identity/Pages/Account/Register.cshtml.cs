@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using WMS.FrontEnd.Data.Entities;
+using WMS.FrontEnd.Data;
 
 namespace WMS.FrontEnd.Areas.Identity.Pages.Account
 {
@@ -64,13 +64,14 @@ namespace WMS.FrontEnd.Areas.Identity.Pages.Account
 
             [Required]
             [DataType(DataType.Text)]
-            [Display(Name = "Nombre(s)")]
-            public string Nombre { get; set; }
+            [Display(Name = "Nombres(s)")]
+            public string Nombres { get; set; }
 
             [Required]
             [DataType(DataType.Text)]
             [Display(Name = "Apellidos")]
             public string Apellidos { get; set; }
+
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -87,20 +88,25 @@ namespace WMS.FrontEnd.Areas.Identity.Pages.Account
             {
                 var user = new Empleado { 
                     UserName = Input.Email
-                    , Email = Input.Email 
-                    , Nombre = Input.Nombre
+                    , Email = Input.Email
+                    , Nombres = Input.Nombres
                     , Apellidos = Input.Apellidos
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
-                    _userManager.AddToRoleAsync(user, "Empleado").Wait();
+                    /*Asignar rol a usuario*/
+                    //_userManager.AddToRoleAsync(user, "Employee").Wait();
 
                     _logger.LogInformation("User created a new account with password.");
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
                 }
                 foreach (var error in result.Errors)
                 {

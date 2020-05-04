@@ -3,39 +3,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WMS.FrontEnd.Data.Contracts;
-using WMS.FrontEnd.Data.Entities;
+using WMS.FrontEnd.Contracts;
+using WMS.FrontEnd.Data;
 using WMS.FrontEnd.Models;
 
 namespace WMS.FrontEnd.Controllers
 {
-    [Authorize(Roles = "Administrador")]
     public class ConfiguracionGlobalController : Controller
     {
-        private readonly IConfiguracionGlobalRepository _configGlobalRepo;
+        private readonly IConfiguracionGlobalRepository _globalConfigRepo;
         private readonly IMapper _mapper;
 
-        public ConfiguracionGlobalController(IConfiguracionGlobalRepository productoRepository, IMapper mapper)
+        public ConfiguracionGlobalController(IConfiguracionGlobalRepository globalConfigRepo, IMapper mapper)
         {
-            _configGlobalRepo = productoRepository;
+            _globalConfigRepo = globalConfigRepo;
             _mapper = mapper;
         }
+
         // GET: ConfiguracionGlobal
         public ActionResult Index()
         {
-            return View(_mapper.Map<List<ConfiguracionGlobal>, List<ConfiguracionGlobalViewModel>>(_configGlobalRepo.FindAll().ToList()));
+            var globalconfig = _globalConfigRepo.FindAll().ToList();
+            var model = _mapper.Map<List<ConfiguracionGlobal>, List<ConfiguracionGlobalVM>>(globalconfig);
+            return View(model);
         }
 
         // GET: ConfiguracionGlobal/Details/5
         public ActionResult Details(int id)
         {
-            if(!_configGlobalRepo.IsExists(id))
+            if (!_globalConfigRepo.IsExists(id))
                 return NotFound();
 
-            return View(_mapper.Map<ConfiguracionGlobalViewModel>(_configGlobalRepo.FindById(id)));
+            var globalconfig = _globalConfigRepo.FindById(id);
+            var model = _mapper.Map<ConfiguracionGlobalVM>(globalconfig);
+            return View(model);
         }
 
         // GET: ConfiguracionGlobal/Create
@@ -47,18 +50,20 @@ namespace WMS.FrontEnd.Controllers
         // POST: ConfiguracionGlobal/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ConfiguracionGlobalViewModel model)
+        public ActionResult Create(ConfiguracionGlobalVM model)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return View(model);
 
-                var configuracion = _mapper.Map<ConfiguracionGlobal>(model);
+                var globalconfig = _mapper.Map<ConfiguracionGlobal>(model);
+                
+                var isSuccess = _globalConfigRepo.Create(globalconfig);
 
-                if(!_configGlobalRepo.Create(configuracion))
+                if (!isSuccess)
                 {
-                    ModelState.AddModelError("", "Hubo un error....");
+                    ModelState.AddModelError("", "Something went wrong...");
                     return View(model);
                 }
 
@@ -73,28 +78,31 @@ namespace WMS.FrontEnd.Controllers
         // GET: ConfiguracionGlobal/Edit/5
         public ActionResult Edit(int id)
         {
-            if (!_configGlobalRepo.IsExists(id))
+            if (!_globalConfigRepo.IsExists(id))
                 return NotFound();
 
-            var config = _configGlobalRepo.FindById(id);
-            return View(_mapper.Map<ConfiguracionGlobalViewModel>(config));
+            var globalConfig = _globalConfigRepo.FindById(id);
+            var model = _mapper.Map<ConfiguracionGlobalVM>(globalConfig);
+            return View(model);
         }
 
         // POST: ConfiguracionGlobal/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(ConfiguracionGlobalViewModel model)
+        public ActionResult Edit(ConfiguracionGlobalVM model)
         {
             try
             {
+                // TODO: Add update logic here
                 if (!ModelState.IsValid)
                     return View(model);
 
-                var config = _mapper.Map<ConfiguracionGlobal>(model);
-                if(!_configGlobalRepo.Update(config))
+                var leaveType = _mapper.Map<ConfiguracionGlobal>(model);
+                if (!_globalConfigRepo.Update(leaveType))
                 {
-                    ModelState.AddModelError("","Hubo un error...");
+                    ModelState.AddModelError("", "Something went wrong...");
                     return View(model);
+
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -108,11 +116,11 @@ namespace WMS.FrontEnd.Controllers
         // GET: ConfiguracionGlobal/Delete/5
         public ActionResult Delete(int id)
         {
-            var config = _configGlobalRepo.FindById(id);
-            if (config == null)
+            var globalConfig = _globalConfigRepo.FindById(id);
+            if (globalConfig == null)
                 return NotFound();
 
-            if (!_configGlobalRepo.Delete(config))
+            if (!_globalConfigRepo.Delete(globalConfig))
                 return BadRequest();
 
             return RedirectToAction(nameof(Index));
@@ -121,17 +129,19 @@ namespace WMS.FrontEnd.Controllers
         // POST: ConfiguracionGlobal/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, ConfiguracionGlobalViewModel model)
+        public ActionResult Delete(int id, ConfiguracionGlobalVM model)
         {
             try
             {
 
-                var config = _configGlobalRepo.FindById(id);
-                if (config == null)
+                var globalConfig = _globalConfigRepo.FindById(id);
+                if (globalConfig == null)
                     return NotFound();
 
-                if (!_configGlobalRepo.Delete(config))
+                if (!_globalConfigRepo.Delete(globalConfig))
+                {
                     return View(model);
+                }
 
                 return RedirectToAction(nameof(Index));
             }

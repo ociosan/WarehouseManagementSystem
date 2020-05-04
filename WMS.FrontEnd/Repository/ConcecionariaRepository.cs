@@ -1,56 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
-using WMS.Data;
-using WMS.FrontEnd.Data.Contracts;
-using WMS.FrontEnd.Data.Entities;
+using WMS.FrontEnd.Contracts;
+using WMS.FrontEnd.Data;
 
-namespace WMS.FrontEnd.Data.Repository
+namespace WMS.FrontEnd.Repository
 {
     public class ConcecionariaRepository : IConcecionariaRepository
     {
-        private readonly WMSDbContext _dbContext;
-        public ConcecionariaRepository(WMSDbContext context)
+        private readonly ApplicationDbContext _db;
+
+        public ConcecionariaRepository(ApplicationDbContext db)
         {
-            _dbContext = context;
+            _db = db;
         }
+
         public bool Create(Concecionaria entity)
         {
-            _dbContext.Concecionaria.Add(entity);
+            _db.Concecionarias.Add(entity);
             return Save();
         }
 
         public bool Delete(Concecionaria entity)
         {
-            _dbContext.Concecionaria.Remove(entity);
+            _db.Concecionarias.Remove(entity);
             return Save();
         }
 
         public ICollection<Concecionaria> FindAll()
         {
-            return _dbContext.Concecionaria.ToList();
+            return _db.Concecionarias.ToList();
         }
 
         public Concecionaria FindById(int id)
         {
-            return _dbContext.Concecionaria.Find(id);
+            return _db.Concecionarias.Find(id);
         }
 
         public bool IsExists(int id)
         {
-            return _dbContext.Concecionaria.Any(q => q.Id == id);
+            return _db.Concecionarias.Any(q => q.Id == id);
         }
 
         public bool Save()
         {
-            return _dbContext.SaveChanges() > 0;
+            return _db.SaveChanges() > 0;
         }
 
         public bool Update(Concecionaria entity)
         {
-            _dbContext.Concecionaria.Update(entity);
+            _db.Concecionarias.Update(entity);
             return Save();
         }
     }

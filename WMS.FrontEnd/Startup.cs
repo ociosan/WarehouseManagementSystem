@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
+using WMS.FrontEnd.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using WMS.Data;
-using Microsoft.EntityFrameworkCore;
-using WMS.FrontEnd.Mappings;
+using WMS.FrontEnd.Contracts;
+using WMS.FrontEnd.Repository;
 using AutoMapper;
-using WMS.FrontEnd.Data.Repository;
-using WMS.FrontEnd.Data.Contracts;
-using Microsoft.AspNetCore.Identity;
+using WMS.FrontEnd.Mappings;
 
 namespace WMS.FrontEnd
 {
@@ -30,19 +31,18 @@ namespace WMS.FrontEnd
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<WMSDbContext>(options =>
+            services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddScoped<IConcecionariaRepository, ConcecionariaRepository>();
             services.AddScoped<IProductoRepository, ProductoRepository>();
+            services.AddScoped<IConcecionariaRepository, ConcecionariaRepository>();
             services.AddScoped<IConfiguracionGlobalRepository, ConfiguracionGlobalRepository>();
             services.AddAutoMapper(typeof(Maps));
 
             services.AddDefaultIdentity<IdentityUser>()
                 .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<WMSDbContext>();
-
+                .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
@@ -51,12 +51,13 @@ namespace WMS.FrontEnd
         public void Configure(
             IApplicationBuilder app
             , IWebHostEnvironment env
-            ,UserManager<IdentityUser> userManager
-            ,RoleManager<IdentityRole> roleManager)
+            , UserManager<IdentityUser> userManager
+            , RoleManager<IdentityRole> roleManager)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
             }
             else
             {
@@ -72,7 +73,7 @@ namespace WMS.FrontEnd
             app.UseAuthentication();
             app.UseAuthorization();
 
-            SeedData.Seed(userManager,roleManager);
+            SeedData.Seed(userManager, roleManager);
 
             app.UseEndpoints(endpoints =>
             {

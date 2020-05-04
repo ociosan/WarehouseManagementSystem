@@ -4,20 +4,21 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WMS.FrontEnd.Data.Entities
+namespace WMS.FrontEnd.Models
 {
-    public class Concecionaria
+    public class ProductoVM
     {
-        [Key]
         public int Id { get; set; }
+
         [Required]
-        public string Clave { get; set; }
+        public string Codigo { get; set; }
+
         [Required]
-        public string Nombre { get; set; }
+        public string Descripcion { get; set; }
+
         [Required]
-        public string Direccion { get; set; }
-        [Required]
-        public string RFC { get; set; }
+        public decimal Precio { get; set; }
+
         [Required]
         public DateTime FechaAlta { get; set; }
     }

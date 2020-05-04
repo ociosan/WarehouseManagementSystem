@@ -2,54 +2,54 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WMS.Data;
-using WMS.FrontEnd.Data.Contracts;
-using WMS.FrontEnd.Data.Entities;
+using WMS.FrontEnd.Contracts;
+using WMS.FrontEnd.Data;
 
-namespace WMS.FrontEnd.Data.Repository
+namespace WMS.FrontEnd.Repository
 {
     public class ConfiguracionGlobalRepository : IConfiguracionGlobalRepository
     {
-        private readonly WMSDbContext _dbContext;
-        public ConfiguracionGlobalRepository(WMSDbContext context)
+        private readonly ApplicationDbContext _db;
+
+        public ConfiguracionGlobalRepository(ApplicationDbContext db)
         {
-            _dbContext = context;
+            _db = db;
         }
         public bool Create(ConfiguracionGlobal entity)
         {
-            _dbContext.ConfiguracionGlobal.Add(entity);
+            _db.ConfiguracionesGlobales.Add(entity);
             return Save();
         }
 
         public bool Delete(ConfiguracionGlobal entity)
         {
-            _dbContext.ConfiguracionGlobal.Remove(entity);
+            _db.ConfiguracionesGlobales.Remove(entity);
             return Save();
         }
 
         public ICollection<ConfiguracionGlobal> FindAll()
         {
-            return _dbContext.ConfiguracionGlobal.ToList();
+            return _db.ConfiguracionesGlobales.ToList();
         }
 
         public ConfiguracionGlobal FindById(int id)
         {
-            return _dbContext.ConfiguracionGlobal.Find(id);
+            return _db.ConfiguracionesGlobales.Find(id);
         }
 
         public bool IsExists(int id)
         {
-            return _dbContext.ConfiguracionGlobal.Any(q => q.Id == id);
+            return _db.ConfiguracionesGlobales.Any(q => q.Id == id);
         }
 
         public bool Save()
         {
-            return _dbContext.SaveChanges() > 0;
+            return _db.SaveChanges() > 0;
         }
 
         public bool Update(ConfiguracionGlobal entity)
         {
-            _dbContext.ConfiguracionGlobal.Update(entity);
+            _db.ConfiguracionesGlobales.Update(entity);
             return Save();
         }
     }
