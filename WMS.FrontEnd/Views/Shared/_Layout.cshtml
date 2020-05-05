@@ -27,12 +27,21 @@
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropDownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Administración
+                                Inventario
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropDownMenuLink">
-                                <a class="dropdown-item text-dark" asp-controller="ConfiguracionGlobal" asp-action="Index">Configuracion Global</a>
                                 <a class="dropdown-item text-dark" asp-controller="Concecionaria" asp-action="Index">Concecionaria</a>
                                 <a class="dropdown-item text-dark" asp-controller="Producto" asp-action="Index">Producto</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropDownAdminLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Administración
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropDownAdminLink">
+                                <a class="dropdown-item text-dark" asp-controller="Empleado" asp-action="Index">Usuarios</a>
+                                <a class="dropdown-item text-dark" asp-controller="Role" asp-action="Index">Roles</a>
+                                <a class="dropdown-item text-dark" asp-controller="ConfiguracionGlobal" asp-action="Index">Configuracion Global</a>
                             </div>
                         </li>
                     </ul>
