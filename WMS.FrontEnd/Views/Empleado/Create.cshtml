@@ -1,4 +1,4 @@
-﻿@model WMS.FrontEnd.Models.EmpleadoVM
+﻿@model WMS.FrontEnd.Models.CreateEmpleadoVM
 
 @{
     ViewData["Title"] = "Create";
@@ -14,6 +14,11 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
+                <label asp-for="NombreRol" class="control-label"></label>
+                <span asp-validation-for="NombreRol" class="text-danger"></span>
+                @Html.DropDownListFor(q => q.NombreRol, new SelectList(Model.Roles, "Value", "Text"), "Selecciona Rol", new { @class = "form-control" })
+            </div>
+            <div class="form-group">
                 <label asp-for="Nombres" class="control-label"></label>
                 <input asp-for="Nombres" class="form-control" />
                 <span asp-validation-for="Nombres" class="text-danger"></span>
@@ -22,6 +27,11 @@
                 <label asp-for="Apellidos" class="control-label"></label>
                 <input asp-for="Apellidos" class="form-control" />
                 <span asp-validation-for="Apellidos" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaNacimiento" class="control-label"></label>
+                <input asp-for="FechaNacimiento" class="form-control" id="datepicker" />
+                <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
@@ -49,3 +59,12 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+@section Scripts{
+    <script>
+        $(function () {
+            $("#datepicker").datepicker({
+                dateFormat: 'yy-mm-dd'
+            });
+        });
+    </script>
+}

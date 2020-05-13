@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,108 +13,141 @@ namespace WMS.FrontEnd.Controllers
     public class RoleController : Controller
     {
         private RoleManager<IdentityRole> _roleManager;
-        private UserManager<IdentityUser> _userManager;
-
-
-        public RoleController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+        private readonly IMapper _mapper;
+        public RoleController(RoleManager<IdentityRole> roleManager, IMapper mapper)
         {
             _roleManager = roleManager;
-            _userManager = userManager;
+            _mapper = mapper;
         }
 
-        public ViewResult Index() => View(_roleManager.Roles);
-
-        public IActionResult Create() => View();
-
-        [HttpPost]
-        public async Task<IActionResult> Create([Required] string name)
+        // GET: Role
+        public ActionResult Index()
         {
-            if (ModelState.IsValid)
+            var rolesCatalog = _roleManager.Roles.ToList();
+            List<CreateRoleVM> lstRoles = new List<CreateRoleVM>();
+            foreach(var item in rolesCatalog)
             {
-                IdentityResult result = await _roleManager.CreateAsync(new IdentityRole(name));
-                if (result.Succeeded)
-                    return RedirectToAction(nameof(Index));
-                else
-                    Errors(result);
-            }
-            return View(name);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Delete(string id)
-        {
-            IdentityRole role = await _roleManager.FindByIdAsync(id);
-            if (role != null)
-            {
-                IdentityResult result = await _roleManager.DeleteAsync(role);
-                if (result.Succeeded)
-                    return RedirectToAction(nameof(Index));
-                else
-                    Errors(result);
-            }
-            else
-                ModelState.AddModelError("", "No role found");
-
-            return View(nameof(Index), _roleManager.Roles);
-        }
-
-        public async Task<IActionResult> Update(string id)
-        {
-            IdentityRole role = await _roleManager.FindByIdAsync(id);
-            List<IdentityUser> members = new List<IdentityUser>();
-            List<IdentityUser> nonMembers = new List<IdentityUser>();
-            foreach (IdentityUser user in _userManager.Users)
-            {
-                var list = await _userManager.IsInRoleAsync(user, role.Name) ? members : nonMembers;
-                list.Add(user);
-            }
-            return View(new RoleEditVM
-            {
-                Role = role,
-                Members = members,
-                NonMembers = nonMembers
-            });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Update(RoleModificationVM model)
-        {
-            IdentityResult result;
-            if (ModelState.IsValid)
-            {
-                foreach (string userId in model.AddIds ?? new string[] { })
-                {
-                    IdentityUser user = await _userManager.FindByIdAsync(userId);
-                    if (user != null)
+                lstRoles.Add(
+                    new CreateRoleVM()
                     {
-                        result = await _userManager.AddToRoleAsync(user, model.RoleName);
-                        if (!result.Succeeded)
-                            Errors(result);
-                    }
-                }
-                foreach (string userId in model.DeleteIds ?? new string[] { })
-                {
-                    IdentityUser user = await _userManager.FindByIdAsync(userId);
-                    if (user != null)
-                    {
-                        result = await _userManager.RemoveFromRoleAsync(user, model.RoleName);
-                        if (!result.Succeeded)
-                            Errors(result);
-                    }
-                }
+                        Id = item.Id
+                        , Name = item.Name
+                    });
             }
 
-            if (ModelState.IsValid)
+
+            return View(lstRoles);
+        }
+
+        // GET: Role/Details/5
+        public ActionResult Details(int id)
+        {
+            return View();
+        }
+
+        // GET: Role/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Role/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(CreateRoleVM model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return View(model);
+
+                var rol = _mapper.Map<IdentityRole>(model);
+                rol.Id = Guid.NewGuid().ToString();
+                var result = _roleManager.CreateAsync(rol).Result;
+                if(!result.Succeeded)
+                {
+                    ModelState.AddModelError("", "Something went wrong...");
+                    return View(model);
+                }
+                
                 return RedirectToAction(nameof(Index));
-            else
-                return await Update(model.RoleId);
+            }
+            catch(Exception ex)
+            {
+                return View();
+            }
         }
 
-        private void Errors(IdentityResult result)
+        // GET: Role/Edit/5
+        public ActionResult Edit(string id)
         {
-            foreach (IdentityError error in result.Errors)
-                ModelState.AddModelError("", error.Description);
+            var role = _roleManager.Roles.FirstOrDefault(x => x.Id == id);
+            if (role == null)
+                return NotFound();
+
+            var model = new EditRoleVM() 
+            {
+                Id = role.Id
+                , Name = role.Name
+                , ConcurrencyStamp = role.ConcurrencyStamp
+            };
+            return View(model);
         }
 
+        // POST: Role/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(EditRoleVM model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return View(model);
+
+                var Rol = new IdentityRole()
+                {
+                    Id = model.Id
+                 , Name = model.Name
+                 , NormalizedName = model.Name.ToUpper()
+                 , ConcurrencyStamp = model.ConcurrencyStamp
+                };
+
+                var isSuccess = _roleManager.UpdateAsync(Rol).Result;
+                if(!isSuccess.Succeeded)
+                {
+                    ModelState.AddModelError("", "Something went wrong...");
+                    return View(model);
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // GET: Role/Delete/5
+        public ActionResult Delete(int id)
+        {
+            return View();
+        }
+
+        // POST: Role/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id, IFormCollection collection)
+        {
+            try
+            {
+                // TODO: Add delete logic here
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace WMS.FrontEnd.Mappings
             CreateMap<Concecionaria, ConcecionariaVM>().ReverseMap();
             CreateMap<Producto, ProductoVM>().ReverseMap();
             CreateMap<Empleado, EmpleadoVM>().ReverseMap();
+            CreateMap<IdentityRole,CreateRoleVM>().ReverseMap();
         }
     }
 }

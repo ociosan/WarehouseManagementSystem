@@ -16,6 +16,7 @@ using WMS.FrontEnd.Contracts;
 using WMS.FrontEnd.Repository;
 using AutoMapper;
 using WMS.FrontEnd.Mappings;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WMS.FrontEnd
 {
@@ -82,6 +83,7 @@ namespace WMS.FrontEnd
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+
         }
     }
 }

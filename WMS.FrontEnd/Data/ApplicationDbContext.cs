@@ -22,5 +22,7 @@ namespace WMS.FrontEnd.Data
         public DbSet<WMS.FrontEnd.Models.ConcecionariaVM> ConcecionariaVM { get; set; }
         public DbSet<WMS.FrontEnd.Models.ProductoVM> ProductoVM { get; set; }
         public DbSet<WMS.FrontEnd.Models.EmpleadoVM> EmpleadoVM { get; set; }
+        public DbSet<WMS.FrontEnd.Models.CreateRoleVM> CreateRoleVM { get; set; }
+        public DbSet<WMS.FrontEnd.Models.EditRoleVM> EditRoleVM { get; set; }
     }
 }

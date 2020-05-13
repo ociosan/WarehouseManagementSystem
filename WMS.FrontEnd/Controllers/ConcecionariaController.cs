@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WMS.Catalogs.Cons;
 using WMS.FrontEnd.Contracts;
 using WMS.FrontEnd.Data;
 using WMS.FrontEnd.Models;
@@ -103,8 +105,8 @@ namespace WMS.FrontEnd.Controllers
                 {
                     ModelState.AddModelError("", "Something went wrong...");
                     return View(model);
-
                 }
+
                 return RedirectToAction(nameof(Index));
             }
             catch

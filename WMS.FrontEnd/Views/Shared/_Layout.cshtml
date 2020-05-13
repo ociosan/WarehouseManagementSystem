@@ -1,11 +1,19 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using WMS.Catalogs.Cons;
+@inject SignInManager<IdentityUser> SingInManager
+@inject UserManager<IdentityUser> UserManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - WMS.FrontEnd</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 </head>
 <body>
     <header>
@@ -19,31 +27,31 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropDownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Inventario
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropDownMenuLink">
-                                <a class="dropdown-item text-dark" asp-controller="Concecionaria" asp-action="Index">Concecionaria</a>
-                                <a class="dropdown-item text-dark" asp-controller="Producto" asp-action="Index">Producto</a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropDownAdminLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Administración
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropDownAdminLink">
-                                <a class="dropdown-item text-dark" asp-controller="Empleado" asp-action="Index">Usuarios</a>
-                                <a class="dropdown-item text-dark" asp-controller="Role" asp-action="Index">Roles</a>
-                                <a class="dropdown-item text-dark" asp-controller="ConfiguracionGlobal" asp-action="Index">Configuracion Global</a>
-                            </div>
-                        </li>
+                        @if (SingInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropDownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Inventario
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropDownMenuLink">
+                                    <a class="dropdown-item text-dark" asp-controller="Concecionaria" asp-action="Index">Concecionaria</a>
+                                    <a class="dropdown-item text-dark" asp-controller="Producto" asp-action="Index">Producto</a>
+                                </div>
+                            </li>
+
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropDownAdminLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Administración
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropDownAdminLink">
+                                    <a class="dropdown-item text-dark" asp-controller="Empleado" asp-action="Index">Usuarios</a>
+                                    <a class="dropdown-item text-dark" asp-controller="Role" asp-action="Index">Roles</a>
+                                    <a class="dropdown-item text-dark" asp-controller="ConfiguracionGlobal" asp-action="Index">Configuracion Global</a>
+                                </div>
+                            </li>
+
+                        }
                     </ul>
                 </div>
             </div>
@@ -62,7 +70,9 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
