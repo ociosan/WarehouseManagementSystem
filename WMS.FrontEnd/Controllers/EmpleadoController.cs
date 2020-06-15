@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Logging;
 using WMS.Catalogs.Cons;
 using WMS.FrontEnd.Data;
 using WMS.FrontEnd.Models;
@@ -89,7 +86,18 @@ namespace WMS.FrontEnd.Controllers
             try
             {
                 if (!ModelState.IsValid)
+                {
+                    var roles = _roleManager.Roles.ToList();
+                    var rolesItems = roles.Select(q => new SelectListItem
+                    {
+                        Text = q.Name,
+                        Value = q.Name
+                    });
+
+                    model.Roles = rolesItems;
+
                     return View(model);
+                }
 
                 var empleado = new Empleado() 
                 {
@@ -122,7 +130,7 @@ namespace WMS.FrontEnd.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            catch(Exception ex)
+            catch
             {
                 return View();
             }

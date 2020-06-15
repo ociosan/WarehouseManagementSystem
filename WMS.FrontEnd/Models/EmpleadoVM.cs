@@ -33,10 +33,15 @@ namespace WMS.FrontEnd.Models
     public class CreateEmpleadoVM
     {
         public string Id { get; set; }
+        [Required(ErrorMessage = "Ingresa el nombre del empleado")]
         public string Nombres { get; set; }
+        [Required(ErrorMessage = "Ingresa los apellidos del usuario")]
         public string Apellidos { get; set; }
+        [Required(ErrorMessage = "Selecciona la fecha de nacimiento")]
         public string FechaNacimiento { get; set; }
         public string FechaAlta { get; set; }
+        [Required(ErrorMessage = "Ingresa una cuenta de correo electrónico")]
+        [EmailAddress(ErrorMessage = "Cuenta de correo Inválido")]
         public string Email { get; set; }
 
         [Required]
@@ -50,7 +55,7 @@ namespace WMS.FrontEnd.Models
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
-        [Display(Name = "Nombre de Rol:")]
+        [Display(Name = "Perfil:")]
         public string NombreRol { get; set; }
         public IEnumerable<SelectListItem> Roles { get; set; }
     }
@@ -60,9 +65,12 @@ namespace WMS.FrontEnd.Models
         public string Id { get; set; }
         public string Nombres { get; set; }
         public string Apellidos { get; set; }
+        [Display(Name = "Fecha de Nacimiento")]
         public DateTime FechaNacimiento { get; set; }
+        [Display(Name = "Fecha de Ingreso")]
         public DateTime FechaAlta { get; set; }
         public string Email { get; set; }
+        [Display(Name = "Perfil")]
         public string NombreRol { get; set; }
 
     }
